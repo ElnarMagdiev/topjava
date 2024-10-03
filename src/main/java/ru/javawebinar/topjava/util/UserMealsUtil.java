@@ -8,6 +8,8 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class UserMealsUtil {
@@ -25,6 +27,8 @@ public class UserMealsUtil {
         List<UserMealWithExcess> mealsTo = filteredByCycles(meals, LocalTime.of(7, 0), LocalTime.of(12, 0), 2000);
         mealsTo.forEach(System.out::println);
 
+        //List<UserMealWithExcess> mealsTo1 = filteredByCyclesOptional2(meals, LocalTime.of(7, 0), LocalTime.of(12, 0), 2000);
+        //mealsTo1.forEach(System.out::println);
        //System.out.println(filteredByStreams(meals, LocalTime.of(7, 0), LocalTime.of(12, 0), 2000));
     }
 
@@ -41,6 +45,20 @@ public class UserMealsUtil {
                 resultList.add(new UserMealWithExcess(mealLocalDateTime, meal.getDescription(), meal.getCalories(), caloriesPerDate.get(mealLocalDateTime.toLocalDate()) > caloriesPerDay));
             }
         }
+        return resultList;
+    }
+
+    public static List<UserMealWithExcess> filteredByCyclesOptional2(List<UserMeal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
+        Map<LocalDate, Integer> caloriesPerDate = new HashMap<>();
+        List<UserMealWithExcess> resultList = new ArrayList<>();
+        Predicate<Boolean> predicate = bool -> true;
+        for (UserMeal meal: meals) {
+            caloriesPerDate.merge(meal.getDate(), meal.getCalories(), Integer::sum);
+            if (TimeUtil.isBetweenHalfOpen(meal.getTime(), startTime, endTime)) {
+                predicate = predicate.and(bool -> resultList.add(new UserMealWithExcess(meal.getDateTime(), meal.getDescription(), meal.getCalories(), caloriesPerDate.get(meal.getDate()) > caloriesPerDay)));
+            }
+        }
+        predicate.test(true);
         return resultList;
     }
 
