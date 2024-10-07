@@ -9,36 +9,25 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import java.io.IOException;
-import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class MealServlet extends HttpServlet {
     private static final Logger log = getLogger(MealServlet.class);
-    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyy-MM-dd HH:mm");
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyy-MM-dd HH:mm");
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         log.debug("redirect to meals");
 
         List<Meal> meals = MealsUtil.getMealList();
-        Map<LocalDate, Integer> caloriesSumByDate = meals.stream()
-                .collect(
-                        Collectors.groupingBy(Meal::getDate, Collectors.summingInt(Meal::getCalories))
-                );
-        List<MealTo> mealTos = meals.stream()
-                        .map(meal -> MealsUtil.createTo(meal, caloriesSumByDate.get(meal.getDate()) > MealsUtil.CALORIES_PER_DAY))
-                        .sorted(Comparator.comparing(MealTo::getDateTime))
-                        .collect(Collectors.toList());
+        List<MealTo> mealTos =MealsUtil.filteredByStreams(meals, LocalTime.MIN, LocalTime.MAX, MealsUtil.CALORIES_PER_DAY);
         req.setAttribute("list", mealTos);
-        req.setAttribute("formatter", formatter);
+        req.setAttribute("formatter", FORMATTER);
         req.getRequestDispatcher("meals.jsp").forward(req, resp);
     }
 }
