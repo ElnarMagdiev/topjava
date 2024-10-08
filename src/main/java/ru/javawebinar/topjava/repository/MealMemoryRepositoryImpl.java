@@ -11,7 +11,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class MealRepositoryImpl implements MealRepository {
+public class MealMemoryRepositoryImpl implements MealRepository {
+
     private static final AtomicInteger atomicInt = new AtomicInteger(0);
     private static final Map<Integer, Meal> meals = new ConcurrentHashMap<>();
 
@@ -31,6 +32,7 @@ public class MealRepositoryImpl implements MealRepository {
         Meal meal6 = new Meal(atomicInt.incrementAndGet(), LocalDateTime.of(2020, Month.JANUARY, 31, 20, 0), "Ужин", 410);
         meals.put(meal6.getId(), meal6);
     }
+
     @Override
     public List<Meal> getAll() {
         return Collections.unmodifiableList(new ArrayList<>(meals.values()));
@@ -44,11 +46,12 @@ public class MealRepositoryImpl implements MealRepository {
     @Override
     public Meal save(Meal meal) {
         if (meal.getId() == null) {
-            Meal created = new Meal(atomicInt.incrementAndGet(), meal.getDateTime(), meal.getDescription(), meal.getCalories());
+            Meal created = new Meal(atomicInt.incrementAndGet(),
+                    meal.getDateTime(), meal.getDescription(), meal.getCalories());
             meals.put(created.getId(), created);
             return created;
         }
-        return meals.computeIfPresent(meal.getId(), (a, b) -> meal);
+        return meals.computeIfPresent(meal.getId(), (key, value) -> meal);
     }
 
     @Override
