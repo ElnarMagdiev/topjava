@@ -3,7 +3,7 @@ package ru.javawebinar.topjava.web;
 import org.slf4j.Logger;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.model.MealTo;
-import ru.javawebinar.topjava.repository.MealMemoryRepository;
+import ru.javawebinar.topjava.repository.MemoryMealRepository;
 import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.util.MealsUtil;
 
@@ -29,7 +29,7 @@ public class MealServlet extends HttpServlet {
 
     @Override
     public void init() {
-        mealRepository = new MealMemoryRepository();
+        mealRepository = new MemoryMealRepository();
     }
 
     @Override
@@ -52,19 +52,6 @@ public class MealServlet extends HttpServlet {
                 break;
             default:
                 list(req, resp);
-        }
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        log.debug("POST request");
-        req.setCharacterEncoding("UTF-8");
-
-        String id = req.getParameter("id");
-        if (id == null || id.isEmpty()) {
-            create(req, resp);
-        } else {
-            update(req, resp);
         }
     }
 
@@ -101,6 +88,19 @@ public class MealServlet extends HttpServlet {
         mealRepository.delete(Integer.parseInt(id));
         log.debug("meal deleted id: {}", id);
         resp.sendRedirect("meals");
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        log.debug("POST request");
+        req.setCharacterEncoding("UTF-8");
+
+        String id = req.getParameter("id");
+        if (id == null || id.isEmpty()) {
+            create(req, resp);
+        } else {
+            update(req, resp);
+        }
     }
 
     private void create(HttpServletRequest req,

@@ -10,7 +10,6 @@
 <hr>
 <h2>${param.action == 'add' ? 'Add meal' : 'Edit meal'}</h2>
 <form method="post" action="meals">
-        <input type="hidden" name="action" value='add'>
         <input type="hidden" name="id" value="${meal.id}">
     <dl>
         <dt><label for="dateTime">Date/Time</label></dt>
