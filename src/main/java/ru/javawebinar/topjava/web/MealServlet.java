@@ -3,7 +3,7 @@ package ru.javawebinar.topjava.web;
 import org.slf4j.Logger;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.model.MealTo;
-import ru.javawebinar.topjava.repository.MealMemoryRepositoryImpl;
+import ru.javawebinar.topjava.repository.MealMemoryRepository;
 import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.util.MealsUtil;
 
@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -21,13 +22,19 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class MealServlet extends HttpServlet {
 
     private static final Logger log = getLogger(MealServlet.class);
+
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyy-MM-dd HH:mm");
-    private static final MealRepository mealRepository = new MealMemoryRepositoryImpl();
+
+    private MealRepository mealRepository;
+
+    @Override
+    public void init() {
+        mealRepository = new MealMemoryRepository();
+    }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         log.debug("GET request");
-        req.setCharacterEncoding("UTF-8");
 
         String action = req.getParameter("action");
         if (action == null) {
@@ -52,7 +59,7 @@ public class MealServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         log.debug("POST request");
         req.setCharacterEncoding("UTF-8");
-        resp.setCharacterEncoding("UTF-8");
+
         String id = req.getParameter("id");
         if (id == null || id.isEmpty()) {
             create(req, resp);
@@ -76,7 +83,6 @@ public class MealServlet extends HttpServlet {
     private void add(HttpServletRequest req,
                      HttpServletResponse resp) throws ServletException, IOException {
         log.debug("add meal");
-        req.setAttribute("meal", null);
         req.getRequestDispatcher("mealEditForm.jsp").forward(req, resp);
     }
 
@@ -100,7 +106,7 @@ public class MealServlet extends HttpServlet {
     private void create(HttpServletRequest req,
                         HttpServletResponse resp) throws IOException {
         log.debug("create meal");
-        Meal mealFromReq = MealsUtil.fromRequest(req);
+        Meal mealFromReq = fromRequest(req);
         Meal created = mealRepository.save(mealFromReq);
         log.debug("meal created {}", created);
         resp.sendRedirect("meals");
@@ -109,15 +115,23 @@ public class MealServlet extends HttpServlet {
     private void update(HttpServletRequest req,
                         HttpServletResponse resp) throws IOException {
         log.debug("update meal");
-        String id = req.getParameter("id");
-        Meal mealFromMemory = mealRepository.getById(Integer.parseInt(id));
-        if (mealFromMemory == null) {
-            log.warn("meal not found id: {}", id);
-            return;
-        }
-        Meal mealFromReq = MealsUtil.fromRequest(req);
+
+        Meal mealFromReq = fromRequest(req);
         Meal updated = mealRepository.save(mealFromReq);
         log.debug("meal updated {} ", updated);
         resp.sendRedirect("meals");
+    }
+
+    private static Meal fromRequest(HttpServletRequest req) {
+        String id = req.getParameter("id");
+        String dateTime = req.getParameter("dateTime");
+        String description = req.getParameter("description");
+        String calories = req.getParameter("calories");
+        return new Meal(
+                id.isEmpty() ? null : Integer.parseInt(id),
+                LocalDateTime.parse(dateTime),
+                description,
+                Integer.parseInt(calories)
+        );
     }
 }
