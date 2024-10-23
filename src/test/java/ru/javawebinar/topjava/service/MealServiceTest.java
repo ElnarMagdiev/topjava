@@ -44,9 +44,19 @@ public class MealServiceTest {
     }
 
     @Test
+    public void getNotFound() {
+        assertThrows(NotFoundException.class, () -> service.get(NOT_FOUND, USER_ID));
+    }
+
+    @Test
     public void delete() {
         service.delete(MEAL1_ID, USER_ID);
         assertThrows(NotFoundException.class, () -> service.get(MEAL1_ID, USER_ID));
+    }
+
+    @Test
+    public void deleteNotFound() {
+        assertThrows(NotFoundException.class, () -> service.delete(NOT_FOUND, USER_ID));
     }
 
     @Test
@@ -59,6 +69,12 @@ public class MealServiceTest {
     }
 
     @Test
+    public void getBetweenInclusiveNullDates() {
+        assertMatch(service.getBetweenInclusive(null, null, USER_ID),
+                Arrays.asList(meal7, meal6, meal5, meal4, meal3, meal2, meal1));
+    }
+
+    @Test
     public void getAll() {
         List<Meal> all = service.getAll(USER_ID);
         assertMatch(all, Arrays.asList(meal7, meal6, meal5, meal4, meal3, meal2, meal1));
@@ -68,7 +84,7 @@ public class MealServiceTest {
     public void update() {
         Meal meal = getUpdated();
         service.update(meal, USER_ID);
-        assertMatch(service.get(MEAL1_ID, USER_ID), meal);
+        assertMatch(service.get(MEAL1_ID, USER_ID), getUpdated());
     }
 
     @Test
