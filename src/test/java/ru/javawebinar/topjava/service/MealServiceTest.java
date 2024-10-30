@@ -49,15 +49,17 @@ public class MealServiceTest {
         protected void finished(long nanos, Description description) {
             long time = TimeUnit.NANOSECONDS.toMillis(nanos);
             testsTiming.put(description.getMethodName(), time);
-            logger.info("{} took {} ms", description.getMethodName(), time);
+            logger.info(String.format("%-25s %5d ms", description.getMethodName(), time));
         }
     };
 
     @AfterClass
     public static void afterClass() throws Exception {
+        StringBuilder builder = new StringBuilder();
         for (Map.Entry<String, Long> entry: testsTiming.entrySet()) {
-            logger.info("{} took {} ms", entry.getKey(), entry.getValue());
+            builder.append(String.format("\n%-25s %5d ms", entry.getKey(), entry.getValue()));
         }
+        logger.info(builder.toString());
     }
 
     @Test
