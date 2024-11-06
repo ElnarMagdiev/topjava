@@ -22,17 +22,10 @@ import java.util.List;
 import static org.junit.Assert.assertThrows;
 import static ru.javawebinar.topjava.UserTestData.*;
 
-@ContextConfiguration({
-        "classpath:spring/spring-app.xml",
-        "classpath:spring/spring-db.xml"
-})
-@RunWith(SpringRunner.class)
-@Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
-@ActiveProfiles(resolver = ActiveDbProfileResolver.class)
-public class UserServiceTest {
+public abstract class AbstractUserServiceTest extends AbstractServiceTest {
 
     @Autowired
-    private UserService service;
+    protected UserService service;
 
     @Autowired
     private CacheManager cacheManager;
@@ -54,19 +47,21 @@ public class UserServiceTest {
 
     @Test
     public void duplicateMailCreate() {
-        assertThrows(DataAccessException.class, () ->
-                service.create(new User(null, "Duplicate", "user@yandex.ru", "newPass", Role.USER)));
+        thrown.expect(DataAccessException.class);
+        service.create(new User(null, "Duplicate", "user@yandex.ru", "newPass", Role.USER));
     }
 
     @Test
     public void delete() {
         service.delete(USER_ID);
-        assertThrows(NotFoundException.class, () -> service.get(USER_ID));
+        thrown.expect(NotFoundException.class);
+        service.get(USER_ID);
     }
 
     @Test
     public void deletedNotFound() {
-        assertThrows(NotFoundException.class, () -> service.delete(NOT_FOUND));
+        thrown.expect(NotFoundException.class);
+        service.delete(NOT_FOUND);
     }
 
     @Test
@@ -77,7 +72,8 @@ public class UserServiceTest {
 
     @Test
     public void getNotFound() {
-        assertThrows(NotFoundException.class, () -> service.get(NOT_FOUND));
+        thrown.expect(NotFoundException.class);
+        service.get(NOT_FOUND);
     }
 
     @Test

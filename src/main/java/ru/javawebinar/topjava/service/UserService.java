@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.UserRepository;
+import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.util.List;
 
@@ -49,5 +50,9 @@ public class UserService {
     public void update(User user) {
         Assert.notNull(user, "user must not be null");
         checkNotFound(repository.save(user), user.getId());
+    }
+
+    public User getByIdAndMeals(int id) throws NotFoundException {
+        return checkNotFound(repository.getByIdAndMeals(id), id);
     }
 }
