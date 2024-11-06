@@ -32,9 +32,6 @@ public abstract class AbstractServiceTest {
     private static StringBuilder results = new StringBuilder();
 
     @Rule
-    public ExpectedException thrown = ExpectedException.none();
-
-    @Rule
     public Stopwatch stopwatch = new Stopwatch() {
         @Override
         protected void finished(long nanos, Description description) {

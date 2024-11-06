@@ -2,16 +2,9 @@ package ru.javawebinar.topjava.service;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import org.springframework.dao.DataAccessException;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.context.jdbc.SqlConfig;
-import org.springframework.test.context.junit4.SpringRunner;
-import ru.javawebinar.topjava.ActiveDbProfileResolver;
 import ru.javawebinar.topjava.UserTestData;
 import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
@@ -47,21 +40,19 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
 
     @Test
     public void duplicateMailCreate() {
-        thrown.expect(DataAccessException.class);
-        service.create(new User(null, "Duplicate", "user@yandex.ru", "newPass", Role.USER));
+        assertThrows(DataAccessException.class, () ->
+                service.create(new User(null, "Duplicate", "user@yandex.ru", "newPass", Role.USER)));
     }
 
     @Test
     public void delete() {
         service.delete(USER_ID);
-        thrown.expect(NotFoundException.class);
-        service.get(USER_ID);
+        assertThrows(NotFoundException.class, () -> service.get(USER_ID));
     }
 
     @Test
     public void deletedNotFound() {
-        thrown.expect(NotFoundException.class);
-        service.delete(NOT_FOUND);
+        assertThrows(NotFoundException.class, () -> service.delete(NOT_FOUND));
     }
 
     @Test
@@ -72,8 +63,7 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
 
     @Test
     public void getNotFound() {
-        thrown.expect(NotFoundException.class);
-        service.get(NOT_FOUND);
+        assertThrows(NotFoundException.class, () -> service.get(NOT_FOUND));
     }
 
     @Test

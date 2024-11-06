@@ -11,10 +11,10 @@ import java.time.LocalDateTime;
 
 @Repository
 @Profile(Profiles.POSTGRES_DB)
-public class JdbcPostgresAbstractMealRepository extends JdbcAbstractMealRepository {
+public class PostgresJdbcMealRepository extends JdbcAbstractMealRepository {
 
     @Autowired
-    public JdbcPostgresAbstractMealRepository(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+    public PostgresJdbcMealRepository(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         super(jdbcTemplate, namedParameterJdbcTemplate);
     }
 

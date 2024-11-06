@@ -34,8 +34,9 @@ public class DataJpaMealRepository implements MealRepository {
 
     @Override
     public Meal get(int id, int userId) {
-        Meal meal = crudRepository.findById(id).orElse(null);
-        return meal != null && meal.getUser().getId() == userId ? meal : null;
+        return crudRepository.findById(id)
+                .filter(meal -> meal.getUser().getId() == userId)
+                .orElse(null);
     }
 
     @Override
@@ -49,7 +50,7 @@ public class DataJpaMealRepository implements MealRepository {
     }
 
     @Override
-    public Meal getByIdAndUserId(int id, int userId) {
-        return crudRepository.getByIdAndUserId(id, userId);
+    public Meal getWithUser(int id, int userId) {
+        return crudRepository.getWithUser(id, userId);
     }
 }

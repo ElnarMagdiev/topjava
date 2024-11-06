@@ -12,6 +12,7 @@ import java.time.Month;
 import static ru.javawebinar.topjava.MealTestData.*;
 import static ru.javawebinar.topjava.UserTestData.ADMIN_ID;
 import static ru.javawebinar.topjava.UserTestData.USER_ID;
+import static org.junit.Assert.assertThrows;
 
 public abstract class AbstractMealServiceTest extends AbstractServiceTest {
 
@@ -21,20 +22,17 @@ public abstract class AbstractMealServiceTest extends AbstractServiceTest {
     @Test
     public void delete() {
         service.delete(MEAL1_ID, USER_ID);
-        thrown.expect(NotFoundException.class);
-        service.get(MEAL1_ID, USER_ID);
+        assertThrows(NotFoundException.class, () -> service.get(MEAL1_ID, USER_ID));
     }
 
     @Test
     public void deleteNotFound() {
-        thrown.expect(NotFoundException.class);
-        service.delete(1, USER_ID);
+        assertThrows(NotFoundException.class, () -> service.delete(NOT_FOUND, USER_ID));
     }
 
     @Test
     public void deleteNotOwn() {
-        thrown.expect(NotFoundException.class);
-        service.delete(1, USER_ID);
+        assertThrows(NotFoundException.class, () -> service.delete(MEAL1_ID, ADMIN_ID));
     }
 
     @Test
@@ -49,8 +47,8 @@ public abstract class AbstractMealServiceTest extends AbstractServiceTest {
 
     @Test
     public void duplicateDateTimeCreate() {
-        thrown.expect(DataAccessException.class);
-        service.create(new Meal(null, meal1.getDateTime(), "duplicate", 100), USER_ID);
+        assertThrows(DataAccessException.class, () ->
+                service.create(new Meal(null, meal1.getDateTime(), "duplicate", 100), USER_ID));
     }
 
     @Test
@@ -61,14 +59,12 @@ public abstract class AbstractMealServiceTest extends AbstractServiceTest {
 
     @Test
     public void getNotFound() {
-        thrown.expect(NotFoundException.class);
-        service.get(NOT_FOUND, USER_ID);
+        assertThrows(NotFoundException.class, () -> service.get(NOT_FOUND, USER_ID));
     }
 
     @Test
     public void getNotOwn() {
-        thrown.expect(NotFoundException.class);
-        service.get(MEAL1_ID, ADMIN_ID);
+        assertThrows(NotFoundException.class, () -> service.get(MEAL1_ID, ADMIN_ID));
     }
 
     @Test
@@ -80,9 +76,9 @@ public abstract class AbstractMealServiceTest extends AbstractServiceTest {
 
     @Test
     public void updateNotOwn() {
-        thrown.expect(NotFoundException.class);
-        thrown.expectMessage("Not found entity with id=" + MEAL1_ID);
-        service.update(service.get(MEAL1_ID, USER_ID), ADMIN_ID);
+        NotFoundException exception = assertThrows(NotFoundException.class, () -> service.update(getUpdated(), ADMIN_ID));
+        Assert.assertEquals("Not found entity with id=" + MEAL1_ID, exception.getMessage());
+        MEAL_MATCHER.assertMatch(service.get(MEAL1_ID, USER_ID), meal1);
     }
 
     @Test

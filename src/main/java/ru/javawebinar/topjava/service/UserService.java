@@ -52,7 +52,7 @@ public class UserService {
         checkNotFound(repository.save(user), user.getId());
     }
 
-    public User getByIdAndMeals(int id) throws NotFoundException {
-        return checkNotFound(repository.getByIdAndMeals(id), id);
+    public User getWithMeals(int id) throws NotFoundException {
+        return checkNotFound(repository.getWithMeals(id), id);
     }
 }
