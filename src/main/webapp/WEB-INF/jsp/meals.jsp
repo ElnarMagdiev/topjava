@@ -11,7 +11,7 @@
 <section>
     <h3><spring:message code="meal.title"/></h3>
 
-    <form method="post" action="${pageContext.request.contextPath}/meals/filter">
+    <form method="get" action="${pageContext.request.contextPath}/meals/filter">
         <dl>
             <dt><spring:message code="meal.fromDate"/></dt>
             <dd><input type="date" name="startDate" value="${param.startDate}"></dd>
@@ -43,8 +43,9 @@
             <th></th>
         </tr>
         </thead>
-        <c:forEach items="${requestScope.meals}" var="meal">
-            <tr data-mealExcess="${meal.excess}">
+        <c:forEach items="${meals}" var="meal">
+            <jsp:useBean id="meal" scope="page" type="ru.javawebinar.topjava.to.MealTo"/>
+            <tr data-meal-excess="${meal.excess}">
                 <td>
                         <%--${meal.dateTime.toLocalDate()} ${meal.dateTime.toLocalTime()}--%>
                         <%--<%=TimeUtil.toString(meal.getDateTime())%>--%>
@@ -54,7 +55,7 @@
                 <td>${meal.description}</td>
                 <td>${meal.calories}</td>
                 <td><a href="${pageContext.request.contextPath}/meals/update/${meal.id}"><spring:message code="meal.update"/></a></td>
-                <td><a href="${pageContext.request.contextPath}/meals/delete/${meal.id}"><spring:message code="meal.delete"/></a></td>
+                <td><a href="${pageContext.request.contextPath}/meals/delete?id=${meal.id}"><spring:message code="meal.delete"/></a></td>
             </tr>
         </c:forEach>
     </table>
