@@ -24,18 +24,15 @@ import static ru.javawebinar.topjava.util.DateTimeUtil.parseLocalTime;
 @RequestMapping("/meals")
 public class JspMealController extends AbstractMealController {
 
-    @Autowired
-    private MealService service;
-
     @GetMapping
     public String getAll(Model model) {
         model.addAttribute("meals", super.getAll());
         return "meals";
     }
 
-    @GetMapping("/delete")
-    public String delete(HttpServletRequest request) {
-        super.delete(getId(request));
+    @GetMapping("/delete/{id}")
+    public String delete(HttpServletRequest request, @PathVariable("id") int id) {
+        super.delete(id);
         return "redirect:/meals";
     }
 

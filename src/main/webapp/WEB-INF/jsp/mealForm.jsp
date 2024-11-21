@@ -11,7 +11,7 @@
 
     <h2><spring:message code="${meal.id eq null ? 'meal.create' : 'meal.edit'}"/></h2>
     <hr>
-    <form method="post" action="${pageContext.request.contextPath}/meals">
+    <form method="post" action="meals">
         <input type="hidden" name="id" value="${meal.id}">
         <dl>
             <dt><spring:message code="meal.date"/></dt>
