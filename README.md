@@ -249,3 +249,43 @@
 -  <a href="http://www.bookvoed.ru/book?id=639284">Редмонд Э.: Семь баз данных за семь недель. Введение в современные базы данных и идеологию NoSQL</a>
 -  <a href="http://www.ozon.ru/context/detail/id/3174887/">Brian Goetz: Java Concurrency in Practice</a>
 -  <a href="http://bookvoed.ru/book?id=2593572">G.L. McDowell: Cracking the Coding Interview</a>
+
+### curl запросы Postman
+Список еды:
+Rest-method: get
+http://localhost:8080/topjava/rest/meals
+
+Получить еду:
+Rest-method: get
+http://localhost:8080/topjava/rest/meals/100003
+
+Удалить еду:
+Rest-method: delete
+http://localhost:8080/topjava/rest/meals/100003
+
+Создать еду:
+Rest-method: post
+Content-Type: application/json
+json:
+{
+"dateTime":"2021-12-01T11:30:01",
+"description":"еда",
+"calories":"555"
+}
+http://localhost:8080/topjava/rest/meals
+
+Изменить еду:
+Rest-method: put
+Content-Type: application/json
+json:
+{
+"id": 100004,
+"dateTime":"2021-12-01T11:30:10",
+"description":"Измененная еда",
+"calories":"555"
+}
+http://localhost:8080/topjava/rest/meals/100004
+
+Получить список еды на дату/время:
+Rest-method: get
+http://localhost:8080/topjava/rest/meals/filter?start=2020-01-01T00:00:01&end=2020-01-31T23:59:59
