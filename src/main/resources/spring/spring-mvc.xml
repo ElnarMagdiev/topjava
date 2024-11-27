@@ -23,8 +23,8 @@
         </mvc:message-converters>
     </mvc:annotation-driven>
 
-    <bean id="stringToLocalTimeConverter" class="ru.javawebinar.topjava.web.converter.StringToLocalDateConverter"/>
-    <bean id="stringToLocalDateConverter" class="ru.javawebinar.topjava.web.converter.StringToLocalTimeConverter"/>
+    <bean id="stringToLocalTimeConverter" class="ru.javawebinar.topjava.web.converter.DateTimeConverter$StringToLocalDateConverter"/>
+    <bean id="stringToLocalDateConverter" class="ru.javawebinar.topjava.web.converter.DateTimeConverter$StringToLocalTimeConverter"/>
 
     <bean id="conversionService" class="org.springframework.context.support.ConversionServiceFactoryBean">
         <property name="converters">
