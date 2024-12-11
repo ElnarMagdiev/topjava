@@ -24,7 +24,6 @@ import static ru.javawebinar.topjava.UserTestData.user;
 import static ru.javawebinar.topjava.util.MealsUtil.createTo;
 import static ru.javawebinar.topjava.util.MealsUtil.getTos;
 
-@Disabled
 class MealRestControllerTest extends AbstractControllerTest {
 
     private static final String REST_URL = MealRestController.REST_URL + '/';
@@ -104,5 +103,11 @@ class MealRestControllerTest extends AbstractControllerTest {
                 .with(userHttpBasic(user)))
                 .andExpect(status().isOk())
                 .andExpect(TO_MATCHER.contentJson(getTos(meals, user.getCaloriesPerDay())));
+    }
+
+    @Test
+    void getUnauthorized() throws Exception {
+        perform(MockMvcRequestBuilders.get(REST_URL + MEAL1_ID))
+                .andExpect(status().isUnauthorized());
     }
 }
